@@ -1,0 +1,4 @@
+namespace xmalloc {
+    
+    void startTiaoxiThread();
+}

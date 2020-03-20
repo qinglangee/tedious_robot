@@ -1,66 +1,78 @@
 #include <iostream>
 #include <set>
 #include <sstream>
+#include <string>
 
 #include <cqcppsdk/cqcppsdk.h>
+
+#include "command.hpp"
+#include "group_timer.hpp"
 
 using namespace cq;
 using namespace std;
 using Message = cq::message::Message;
 using MessageSegment = cq::message::MessageSegment;
 
+
+
 CQ_INIT {
-    on_enable([] { logging::info("å¯ç”¨", "æ’ä»¶å·²å¯ç”¨"); });
+    on_enable([] { 
+        xmalloc::startTiaoxiThread();
+        logging::info("ÆôÓÃ", "²å¼şÒÑÆôÓÃ"); 
+    });
 
     on_private_message([](const PrivateMessageEvent &event) {
         try {
-            auto msgid = send_private_message(event.user_id, event.message); // ç›´æ¥å¤è¯»æ¶ˆæ¯
-            logging::info_success("ç§èŠ", "ç§èŠæ¶ˆæ¯å¤è¯»å®Œæˆ, æ¶ˆæ¯ Id: " + to_string(msgid));
-            send_message(event.target,
-                         MessageSegment::face(111) + "è¿™æ˜¯é€šè¿‡ message æ¨¡å—æ„é€ çš„æ¶ˆæ¯~"); // ä½¿ç”¨ message æ¨¡å—æ„é€ æ¶ˆæ¯
+            
+            xmalloc::processMessage(event);
         } catch (ApiError &err) {
-            logging::warning("ç§èŠ", "ç§èŠæ¶ˆæ¯å¤è¯»å¤±è´¥, é”™è¯¯ç : " + to_string(err.code));
+            logging::warning("Ë½ÁÄ", "Ë½ÁÄÏûÏ¢´¦Àí³ö´í, ´íÎóÂë: " + to_string(err.code));
         }
     });
 
     on_message([](const MessageEvent &event) {
-        logging::debug("æ¶ˆæ¯", "æ”¶åˆ°æ¶ˆæ¯: " + event.message + "\nå®é™…ç±»å‹: " + typeid(event).name());
+        logging::debug("ÏûÏ¢", "ÊÕµ½ÏûÏ¢: " + event.message + "\nÊµ¼ÊÀàĞÍ: " + typeid(event).name());
     });
 
     on_group_message([](const GroupMessageEvent &event) {
-        static const set<int64_t> ENABLED_GROUPS = {123456, 123457};
-        if (ENABLED_GROUPS.count(event.group_id) == 0) return; // ä¸åœ¨å¯ç”¨çš„ç¾¤ä¸­, å¿½ç•¥
+        static const set<int64_t> ENABLED_GROUPS = {132847879, 1234567};
+        if (ENABLED_GROUPS.count(event.group_id) == 0) return; // ²»ÔÚÆôÓÃµÄÈºÖĞ, ºöÂÔ
 
         try {
-            send_message(event.target, event.message); // å¤è¯»
-            auto mem_list = get_group_member_list(event.group_id); // è·å–ç¾¤æˆå‘˜åˆ—è¡¨
-            string msg;
-            for (auto i = 0; i < min(10, static_cast<int>(mem_list.size())); i++) {
-                msg += "æ˜µç§°: " + mem_list[i].nickname + "\n"; // æ‹¼æ¥å‰åä¸ªæˆå‘˜çš„æ˜µç§°
-            }
-            send_group_message(event.group_id, msg); // å‘é€ç¾¤æ¶ˆæ¯
-        } catch (ApiError &) { // å¿½ç•¥å‘é€å¤±è´¥
+            // send_message(event.target, event.message); // ¸´¶Á
+            // auto mem_list = get_group_member_list(event.group_id); // »ñÈ¡Èº³ÉÔ±ÁĞ±í
+            // string msg;
+            // for (auto i = 0; i < min(10, static_cast<int>(mem_list.size())); i++) {
+            //     msg += "êÇ³Æ: " + mem_list[i].nickname + "\n"; // Æ´½ÓÇ°Ê®¸ö³ÉÔ±µÄêÇ³Æ
+            // }
+            // send_group_message(event.group_id, "see you"); // ·¢ËÍÈºÏûÏ¢
+            // send_group_message(132847879, "next time"); // ·¢ËÍÈºÏûÏ¢
+        } catch (ApiError &err) { // ºöÂÔ·¢ËÍÊ§°Ü
+            logging::warning("ÈºÁÄ", "ÈºÁÄÏûÏ¢¸´¶ÁÊ§°Ü, ´íÎóÂë: " + to_string(err.code));
         }
         if (event.is_anonymous()) {
-            logging::info("ç¾¤èŠ", "æ¶ˆæ¯æ˜¯åŒ¿åæ¶ˆæ¯, åŒ¿åæ˜µç§°: " + event.anonymous.name);
+            logging::info("ÈºÁÄ", "ÏûÏ¢ÊÇÄäÃûÏûÏ¢, ÄäÃûêÇ³Æ: " + event.anonymous.name);
         }
-        event.block(); // é˜»æ­¢å½“å‰äº‹ä»¶ä¼ é€’åˆ°ä¸‹ä¸€ä¸ªæ’ä»¶
+        // event.block(); // ×èÖ¹µ±Ç°ÊÂ¼ş´«µİµ½ÏÂÒ»¸ö²å¼ş
     });
 
-    on_group_upload([](const auto &event) { // å¯ä»¥ä½¿ç”¨ auto è‡ªåŠ¨æ¨æ–­ç±»å‹
-        stringstream ss;
-        ss << "æ‚¨ä¸Šä¼ äº†ä¸€ä¸ªæ–‡ä»¶, æ–‡ä»¶å: " << event.file.name << ", å¤§å°(å­—èŠ‚): " << event.file.size;
-        try {
-            send_message(event.target, ss.str());
-        } catch (ApiError &) {
-        }
+    on_group_upload([](const auto &event) { // ¿ÉÒÔÊ¹ÓÃ auto ×Ô¶¯ÍÆ¶ÏÀàĞÍ
+        // stringstream ss;
+        // ss << "ÄúÉÏ´«ÁËÒ»¸öÎÄ¼ş, ÎÄ¼şÃû: " << event.file.name << ", ´óĞ¡(×Ö½Ú): " << event.file.size;
+        // try {
+        //     send_message(event.target, ss.str());
+        // } catch (ApiError &) {
+        // }
     });
 }
 
 CQ_MENU(menu_demo_1) {
-    logging::info("èœå•", "ç‚¹å‡»èœå•1");
+    logging::info("²Ëµ¥", "µã»÷²Ëµ¥1");
 }
 
 CQ_MENU(menu_demo_2) {
-    send_private_message(10000, "æµ‹è¯•");
+    logging::info("²Ëµ¥", "µã»÷²Ëµ¥2");
 }
+
+
+

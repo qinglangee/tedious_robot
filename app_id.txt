@@ -1,1 +1,1 @@
-com.example.demo
+com.xmalloc.cqp
