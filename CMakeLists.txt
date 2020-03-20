@@ -1,28 +1,28 @@
 cmake_minimum_required(VERSION 3.9)
-project(cqcppsdk-demo) # ÌîĞ´ÏîÄ¿Ãû³Æ
+project(cqcppsdk-demo) # å¡«å†™é¡¹ç›®åç§°
 
-set(CMAKE_CXX_STANDARD 17) # ÉèÖÃ C++ ±ê×¼°æ±¾Îª C++17, ±ØĞë
+set(CMAKE_CXX_STANDARD 17) # è®¾ç½® C++ æ ‡å‡†ç‰ˆæœ¬ä¸º C++17, å¿…é¡»
 
-include(extern/cqcppsdk/cqcppsdk.cmake) # °üº¬ SDK µÄ CMake ½Å±¾, ±ØĞë
+include(extern/cqcppsdk/cqcppsdk.cmake) # åŒ…å« SDK çš„ CMake è„šæœ¬, å¿…é¡»
 
-#include_directories(src) # ÉèÖÃ src Ä¿Â¼Îª°üº¬Ä¿Â¼, ¿É¸ù¾İÊµ¼ÊÇé¿öĞŞ¸Ä
-include_directories(src/include) # ÉèÖÃ src Ä¿Â¼Îª°üº¬Ä¿Â¼, ¿É¸ù¾İÊµ¼ÊÇé¿öĞŞ¸Ä
+#include_directories(src) # è®¾ç½® src ç›®å½•ä¸ºåŒ…å«ç›®å½•, å¯æ ¹æ®å®é™…æƒ…å†µä¿®æ”¹
+include_directories(src/include) # è®¾ç½® src ç›®å½•ä¸ºåŒ…å«ç›®å½•, å¯æ ¹æ®å®é™…æƒ…å†µä¿®æ”¹
 
-# ´Ó app_id.txt ÎÄ¼ş¶ÁÈ¡ app id, Ò²¿ÉÒÔÖ±½ÓÉèÖÃ
+# ä» app_id.txt æ–‡ä»¶è¯»å– app id, ä¹Ÿå¯ä»¥ç›´æ¥è®¾ç½®
 file(READ "app_id.txt" APP_ID)
 string(STRIP "${APP_ID}" APP_ID)
-cq_set_app_id(${APP_ID}) # ÉèÖÃ app id, ±ØĞë
+cq_set_app_id(${APP_ID}) # è®¾ç½® app id, å¿…é¡»
 
-file(GLOB_RECURSE SOURCE_FILES src/*.cpp) # µİ¹éËÑË÷ src Ä¿Â¼ÖĞµÄÔ´ÎÄ¼ş, ¿É¸ù¾İÊµ¼ÊÇé¿öĞŞ¸Ä
+file(GLOB_RECURSE SOURCE_FILES src/*.cpp) # é€’å½’æœç´¢ src ç›®å½•ä¸­çš„æºæ–‡ä»¶, å¯æ ¹æ®å®é™…æƒ…å†µä¿®æ”¹
 
 
 
 if (CQ_CAN_BUILD_STD_MODE)
-    cq_add_std_app(${SOURCE_FILES}) # Ìí¼Ó std Ä£Ê½µÄ¶¯Ì¬Á´½Ó¿â¹¹½¨Ä¿±ê
+    cq_add_std_app(${SOURCE_FILES}) # æ·»åŠ  std æ¨¡å¼çš„åŠ¨æ€é“¾æ¥åº“æ„å»ºç›®æ ‡
     cq_install_std_app("d:/software/CQPro/")
 endif ()
 
-# Ìí¼Ó dev Ä£Ê½µÄ¿ÉÖ´ĞĞÎÄ¼ş¹¹½¨Ä¿±ê
+# æ·»åŠ  dev æ¨¡å¼çš„å¯æ‰§è¡Œæ–‡ä»¶æ„å»ºç›®æ ‡
 cq_add_dev_app(${SOURCE_FILES})
 
 

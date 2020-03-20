@@ -18,53 +18,53 @@ namespace xmalloc {
 
     void processMessage(const PrivateMessageEvent &event) {
         if(event.user_id != 61804888){
-            logging::info_success("zhch", "ÔÓÓãÃüÁî id: " + to_string(event.user_id) );
+            logging::info_success("zhch", "æ‚é±¼å‘½ä»¤ id: " + to_string(event.user_id) );
             return;
         }
 
         if(event.message.find_first_of("r ") == 0){
 
-            auto msgid = send_private_message(event.user_id, event.message); // Ö±½Ó¸´¶ÁÏûÏ¢
-            logging::info_success("Ë½ÁÄ", "Ë½ÁÄÏûÏ¢¸´¶ÁÍê³É, ÏûÏ¢ Id: " + to_string(msgid));
+            auto msgid = send_private_message(event.user_id, event.message); // ç›´æ¥å¤è¯»æ¶ˆæ¯
+            logging::info_success("ç§èŠ", "ç§èŠæ¶ˆæ¯å¤è¯»å®Œæˆ, æ¶ˆæ¯ Id: " + to_string(msgid));
             auto msgid2 = send_message(event.target,
-                        MessageSegment::face(111) + "ÕâÊÇÍ¨¹ı message Ä£¿é¹¹ÔìµÄÏûÏ¢~"); // Ê¹ÓÃ message Ä£¿é¹¹ÔìÏûÏ¢
-            logging::info_success("Ë½ÁÄ", "Ë½ÁÄÏûÏ¢¸´¶ÁÍê³É, ÏûÏ¢ Id: " + to_string(msgid2));
+                        MessageSegment::face(111) + "è¿™æ˜¯é€šè¿‡ message æ¨¡å—æ„é€ çš„æ¶ˆæ¯~"); // ä½¿ç”¨ message æ¨¡å—æ„é€ æ¶ˆæ¯
+            logging::info_success("ç§èŠ", "ç§èŠæ¶ˆæ¯å¤è¯»å®Œæˆ, æ¶ˆæ¯ Id: " + to_string(msgid2));
         }else if(event.message.find_first_of("!") == 0){
             forwardGroupMessage(event);
         }else if(event.message.find_first_of("cmd ") == 0){
             auto groups = get_group_list();
             for(size_t i = 0; i < groups.size(); i++){
                 cq::Group g = groups[i];
-                logging::info_success("zhch", "ÈºÃû×Ö: " + to_string(g.group_name));
+                logging::info_success("zhch", "ç¾¤åå­—: " + to_string(g.group_name));
 
                 auto members = get_group_member_list(g.group_id);
                 for(size_t j = 0; j < members.size(); j++){
                     cq::GroupMember m = members[j];
-                    logging::info_success("zhch", "ÈºÔ±Ãû×Ö: " + to_string(m.nickname) + " qqºÅ£º" + to_string(m.user_id));
+                    logging::info_success("zhch", "ç¾¤å‘˜åå­—: " + to_string(m.nickname) + " qqå·ï¼š" + to_string(m.user_id));
                 }
             }
         }
 
         
-        send_message(event.target, MessageSegment::face(111) + "Íê±Ï." + event.message);
+        send_message(event.target, MessageSegment::face(111) + "å®Œæ¯•." + event.message);
     }
 
-    // ×ª·¢µ½ÈºµÄÏûÏ¢
+    // è½¬å‘åˆ°ç¾¤çš„æ¶ˆæ¯
     void forwardGroupMessage(const PrivateMessageEvent &event){
         size_t spaceIndex = event.message.find(" ");
         if(spaceIndex == string::npos){
-            send_message(event.target, MessageSegment::face(110) + "´íÎó:" + event.message);
+            send_message(event.target, MessageSegment::face(110) + "é”™è¯¯:" + event.message);
             return;
         }
 
-        int64_t invincible = 132847879;  // invincible no Ñ§Éú»á
+        int64_t invincible = 132847879;  // invincible no å­¦ç”Ÿä¼š
 
         string groupIdStr = event.message.substr(1, spaceIndex - 1);
         int64_t groupId;
         if(groupIdStr == "0"){
             groupId = invincible;
         }else if(groupIdStr == "1"){
-            groupId = 479646367;  // ³õĞÄÚ¹ÊÍ Ô¤±¸¶Ó
+            groupId = 479646367;  // åˆå¿ƒè¯ é‡Š é¢„å¤‡é˜Ÿ
             forwardChuxinMessage(event);
             return;
         }else{
@@ -73,7 +73,7 @@ namespace xmalloc {
 
         string msg = event.message.substr(spaceIndex + 1);
 
-        // ĞèÒª at Ä³ÈË
+        // éœ€è¦ at æŸäºº
         if(msg.find("@") == 0){
             spaceIndex = msg.find(" ");
             if(spaceIndex != string::npos){
@@ -86,21 +86,21 @@ namespace xmalloc {
 
         // send_message(event.target, MessageSegment::face(110) + "head:" + groupIdStr + to_string(spaceIndex) + msg);
         try {
-            send_group_message(groupId, msg); // ·¢ËÍÈºÏûÏ¢
+            send_group_message(groupId, msg); // å‘é€ç¾¤æ¶ˆæ¯
             
-        } catch (ApiError &err) { // ºöÂÔ·¢ËÍÊ§°Ü
-            logging::warning("ÈºÁÄ", "ÈºÁÄÏûÏ¢¸´¶ÁÊ§°Ü, ´íÎóÂë: " + to_string(err.code));
+        } catch (ApiError &err) { // å¿½ç•¥å‘é€å¤±è´¥
+            logging::warning("ç¾¤èŠ", "ç¾¤èŠæ¶ˆæ¯å¤è¯»å¤±è´¥, é”™è¯¯ç : " + to_string(err.code));
         }
     }
 
-    // ³õĞÄÔ¤±¸¶ÓÏûÏ¢µ¥¶À´¦Àí
+    // åˆå¿ƒé¢„å¤‡é˜Ÿæ¶ˆæ¯å•ç‹¬å¤„ç†
     void forwardChuxinMessage(const PrivateMessageEvent &event){
         int64_t groupId = 479646367;
         size_t spaceIndex = 2;
 
         string msg = event.message.substr(spaceIndex + 1);
 
-        // ĞèÒª at Ä³ÈË
+        // éœ€è¦ at æŸäºº
         if(msg.find("@") == 0){
             spaceIndex = msg.find(" ");
             if(spaceIndex != string::npos){
@@ -112,15 +112,15 @@ namespace xmalloc {
                 string newMsg = msg.substr(spaceIndex + 1);
                 string convertMsg = newMsg;
                 if(newMsg == "0"){
-                    convertMsg = "ÃÎÔÂ²éÖ¸Áî";
+                    convertMsg = "æ¢¦æœˆæŸ¥æŒ‡ä»¤";
                 }else if(newMsg == "1"){
-                    convertMsg = "×ÊÁÏ";
+                    convertMsg = "èµ„æ–™";
                 }else if(newMsg == "2"){
-                    convertMsg = "³éÇ©";
+                    convertMsg = "æŠ½ç­¾";
                 }else if(newMsg.find("3") == 0){
-                    convertMsg = "¶ÍÁ¶" + newMsg.substr(1);
+                    convertMsg = "é”»ç‚¼" + newMsg.substr(1);
                 }else if(newMsg.find("4") == 0){
-                    convertMsg = "´ò¹¤" + newMsg.substr(1);
+                    convertMsg = "æ‰“å·¥" + newMsg.substr(1);
                 }
 
 
@@ -131,10 +131,10 @@ namespace xmalloc {
         }
 
         try {
-            send_group_message(groupId, msg); // ·¢ËÍÈºÏûÏ¢
+            send_group_message(groupId, msg); // å‘é€ç¾¤æ¶ˆæ¯
             
-        } catch (ApiError &err) { // ºöÂÔ·¢ËÍÊ§°Ü
-            logging::warning("ÈºÁÄ", "ÈºÁÄÏûÏ¢¸´¶ÁÊ§°Ü, ´íÎóÂë: " + to_string(err.code));
+        } catch (ApiError &err) { // å¿½ç•¥å‘é€å¤±è´¥
+            logging::warning("ç¾¤èŠ", "ç¾¤èŠæ¶ˆæ¯å¤è¯»å¤±è´¥, é”™è¯¯ç : " + to_string(err.code));
         }
     }
 

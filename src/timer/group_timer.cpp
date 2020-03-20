@@ -18,10 +18,10 @@ namespace xmalloc {
     void startTiaoxiThread(){
         _beginthreadex(NULL, 0, tiaoxiFun, NULL, 0, NULL);
         
-        logging::info_success("Æô¶¯", "Æô¶¯¶¨Ê±Ïß³Ì");
+        logging::info_success("å¯åŠ¨", "å¯åŠ¨å®šæ—¶çº¿ç¨‹");
     }
 
-    // µ÷Ï·»úÆ÷ÈË
+    // è°ƒæˆæœºå™¨äºº
     void tiaoxiFun(){
         size_t count = 10;
 
