@@ -3,7 +3,7 @@
 #include <string>
 #include <cqcppsdk/cqcppsdk.h>
 
-#include "command.hpp"
+#include "group_timer.hpp"
 
 using namespace cq;
 using namespace std;
@@ -14,7 +14,9 @@ using MessageSegment = cq::message::MessageSegment;
 namespace xmalloc {
     
     void forwardGroupMessage(const PrivateMessageEvent &event);
+    void forwardCommandMessage(const PrivateMessageEvent &event);
     void forwardChuxinMessage(const PrivateMessageEvent &event);
+    void processChuxinMessage(string message);
 
     void processMessage(const PrivateMessageEvent &event) {
         if(event.user_id != 61804888){
@@ -31,6 +33,8 @@ namespace xmalloc {
             logging::info_success("私聊", "私聊消息复读完成, 消息 Id: " + to_string(msgid2));
         }else if(event.message.find_first_of("!") == 0){
             forwardGroupMessage(event);
+        }else if(event.message.find_first_of("#") == 0){
+            forwardCommandMessage(event);
         }else if(event.message.find_first_of("cmd ") == 0){
             auto groups = get_group_list();
             for(size_t i = 0; i < groups.size(); i++){
@@ -93,12 +97,29 @@ namespace xmalloc {
         }
     }
 
+    // 命令消息的处理
+    void forwardCommandMessage(const PrivateMessageEvent &event){
+        string command = event.message.substr(1);
+        if(command == "stop"){
+            stopTiaoxi();
+        }else if (command == "start"){
+            startTiaoxiThread();
+        }
+    }
     // 初心预备队消息单独处理
     void forwardChuxinMessage(const PrivateMessageEvent &event){
-        int64_t groupId = 479646367;
+        processChuxinMessage(event.message);
+
+    }
+    void processChuxinMessage(string message){
+        if(message.find("!") == string::npos){
+            return;
+        }
+        int64_t groupId = 479646367; // 初心预备队
+        // int64_t groupId = 132847879; // 学生会
         size_t spaceIndex = 2;
 
-        string msg = event.message.substr(spaceIndex + 1);
+        string msg = message.substr(spaceIndex + 1);
 
         // 需要 at 某人
         if(msg.find("@") == 0){
