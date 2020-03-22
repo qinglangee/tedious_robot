@@ -18,6 +18,7 @@ using MessageSegment = cq::message::MessageSegment;
 
 namespace xmalloc {
     bool running = false; // 定时器是否执行
+    default_random_engine e; // 随机数引擎
 
     unsigned int __stdcall tiaoxiThread(void *pPM);
     void tiaoxiFun();
@@ -27,6 +28,8 @@ namespace xmalloc {
         if(running){
             return;
         }
+        
+        e.seed(time(NULL)); //设置新的种子
 
         _beginthreadex(NULL, 0, tiaoxiThread, NULL, 0, NULL);
         
@@ -38,7 +41,8 @@ namespace xmalloc {
         
         running = true;
 
-        default_random_engine e;
+        
+        
         uniform_int_distribution<unsigned> u(0, 10*60*1000);
 
         while(running){
@@ -47,6 +51,7 @@ namespace xmalloc {
             DWORD sleepTime = 30 * 60 * 1000 + u(e);
             logging::info_success("zhch", "休眠时间: " + to_string(sleepTime) + " 分钟：" + to_string(sleepTime/60000));
             Sleep(sleepTime);
+            // Sleep(2000);
         }
 
         return 0;
@@ -67,19 +72,34 @@ namespace xmalloc {
 
 
         string cmd = "";
-        string groupId = "1";
         if(hour > 5 && hour < 9){
-            cmd = "!"+ groupId + " @1 3" + to_string(9-hour);
+            cmd = "3" + to_string(9-hour);
         }else if(hour >8 && hour < 12){
-            cmd = "!"+ groupId + " @1 48";
+            cmd = "48";
+        }else if(hour == 12){
+            cmd = "2";
         }else if(hour > 17 && hour < 20){
-            cmd = "!"+ groupId + " @1 ";
             if(t->tm_min % 2 == 1){
-                cmd = cmd + "33";
+                cmd = "33";
             }else{
-                cmd = cmd + "43";
+                cmd = "43";
             }
         }
+        string cmdHead = "!1 @1 ";
+        if(cmd != ""){
+            cmd = cmdHead + cmd;
+        }
+        // logging::info_success("zhch", "监测01");
+        logging::info_success("zhch", "hour:" + to_string(hour) + "  发送: " + cmd);
+        processChuxinMessage(cmd);
+
+        string others[] ={"摸摸头", "摸摸头", "摸摸头", "抱抱", "举高高", "亲亲", "打钱1", "抢钱"};
+        uniform_int_distribution<unsigned> u(0, sizeof(others)/sizeof(others[0]) - 1);
+        Sleep((10+u(e)) * 1000);
+        // Sleep(1000);
+        // logging::info_success("zhch", "监测02");
+        cmd = cmdHead + others[u(e)];
+        // logging::info_success("zhch", "监测03");
         logging::info_success("zhch", "hour:" + to_string(hour) + "  发送: " + cmd);
         processChuxinMessage(cmd);
     }
