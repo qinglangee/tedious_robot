@@ -62,6 +62,7 @@ namespace xmalloc {
         }
 
         int64_t invincible = 132847879;  // invincible no 学生会
+        int64_t blenderCaiji = 770876213;  // blender 菜鸡互啄群
 
         string groupIdStr = event.message.substr(1, spaceIndex - 1);
         int64_t groupId;
@@ -71,6 +72,8 @@ namespace xmalloc {
             groupId = 479646367;  // 初心诠释 预备队
             forwardChuxinMessage(event);
             return;
+        }else if(groupIdStr == "2"){
+            groupId = blenderCaiji;
         }else{
             groupId = stoll(groupIdStr, 0, 10);
         }
