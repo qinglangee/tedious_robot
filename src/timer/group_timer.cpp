@@ -34,7 +34,8 @@ namespace xmalloc {
     unsigned int __stdcall tiaoxiThread(void *pPM);
     void tiaoxiFun();
     void processCmd(int hour, string cmdContent);
-    void innerSleep(DWORD dwMilliseconds);
+    tm timeFormat(const time_t *_Time);
+    void innerSleep(time_t dwMilliseconds);
     time_t nextTime();
     void writeTimeToFile(time_t sleepTime);
 
@@ -81,7 +82,7 @@ namespace xmalloc {
             writeTimeToFile(sleepTime); // 记录时间
 
             innerSleep(sleepTime);
-            innerSleep(5000);
+            innerSleep(4000);
         }
         logging::info_success("zhch", "循环结束，退出。");
 
@@ -94,17 +95,17 @@ namespace xmalloc {
 
 
         time_t tt = time(NULL);//这句返回的只是一个时间cuo
-        tm* t= localtime(&tt);
+        tm t= timeFormat(&tt);
 
         int hour = 0;
         if(!isDebug){
-            hour = t->tm_hour;
+            hour = t.tm_hour;
         }else{
             hour = (temp++) % 24;
         }
 
         ostringstream oss;
-        oss<<t->tm_year + 1900<<"-"<<t->tm_mon + 1<<"-"<<t->tm_mday<<" "<<t->tm_hour<<":"<<t->tm_min<<":"<<t->tm_sec;
+        oss<<t.tm_year + 1900<<"-"<<t.tm_mon + 1<<"-"<<t.tm_mday<<" "<<t.tm_hour<<":"<<t.tm_min<<":"<<t.tm_sec;
         logging::info_success("zhch", "定时器: " + oss.str() + " 应用hour:" + to_string(hour));
         // send_group_message(132847879, "count:" + to_string(3));
 
@@ -127,7 +128,6 @@ namespace xmalloc {
 
         bool haveAct = false;
         string cmd = "";
-        int i;
         map<int, vector<string>>::iterator acts = timeMap.find(hour);
         // 需要设置时间的命令
         if(acts != timeMap.end()){
@@ -184,9 +184,9 @@ namespace xmalloc {
     // 记录本次调戏和下次调戏执行的时间
     void writeTimeToFile(time_t sleepTime){
         time_t now = time(NULL);//这句返回的只是一个时间cuo，精确到秒
-        tm* t= localtime(&now);
+        tm t= timeFormat(&now);
         ostringstream oss;
-        oss<<t->tm_year + 1900<<"-"<<t->tm_mon + 1<<"-"<<t->tm_mday<<" "<<t->tm_hour<<":"<<t->tm_min<<":"<<t->tm_sec;
+        oss<<t.tm_year + 1900<<"-"<<t.tm_mon + 1<<"-"<<t.tm_mday<<" "<<t.tm_hour<<":"<<t.tm_min<<":"<<t.tm_sec;
         
         
         time_t next = now + sleepTime/1000;
@@ -217,9 +217,19 @@ namespace xmalloc {
 
         return delta;
     }
+    // 时间戳转结构体
+    tm timeFormat(const time_t *_Time){
+        struct tm now_time;
+	    localtime_s(&now_time, _Time);
+        return now_time;
+
+        // 线程不安全版本
+        // tm* t= localtime(&_Time);
+
+    }
     // running 控制 sleep 还要不要继续
-    void innerSleep(DWORD dwMilliseconds){
-        DWORD all = dwMilliseconds/1000;
+    void innerSleep(time_t dwMilliseconds){
+        time_t all = dwMilliseconds/1000;
 
         // 调试时间开关
         if(isDebug){
