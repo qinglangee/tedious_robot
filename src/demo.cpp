@@ -18,7 +18,8 @@ using MessageSegment = cq::message::MessageSegment;
 CQ_INIT {
     on_enable([] { 
         xmalloc::startTiaoxiThread();
-        logging::info("启用", "插件已启用"); 
+        logging::info("启用", "无聊插件已启用"); 
+        
     });
 
     on_private_message([](const PrivateMessageEvent &event) {
@@ -47,6 +48,7 @@ CQ_INIT {
             // }
             // send_group_message(event.group_id, "see you"); // 发送群消息
             // send_group_message(132847879, "next time"); // 发送群消息
+            
         } catch (ApiError &err) { // 忽略发送失败
             logging::warning("群聊", "群聊消息复读失败, 错误码: " + to_string(err.code));
         }
