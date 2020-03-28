@@ -44,6 +44,7 @@ CQ_INIT {
         try {
             Message m = Message(event.message);
             
+            // 处理 @小软软的消息
             if(xmalloc::messageAt(m, selfId)){
                 logging::info_success("zhch", "m: " + event.message );
                 

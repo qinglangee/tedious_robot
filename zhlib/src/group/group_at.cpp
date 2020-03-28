@@ -21,6 +21,7 @@ namespace xmalloc{
 
 
         logging::info_success("zhch", "回复: " + msg );
+        
         // send_group_message(event.group_id, msg); // 发送群消息
     }
 }
