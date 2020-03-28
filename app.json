@@ -2,8 +2,9 @@
     "$schema": "https://awesome.cqp.moe/schema/app/v9/app-schema.json",
     "ret": 1,
     "apiver": 9,
-    "name": "无聊机器人",
+    // "name": "无聊机器人",
     // "name": "迎新小弟弟",
+    "name": "命令聊天",
     "version": "1.0.0",
     "version_id": 1,
     "author": "xmalloc",
@@ -43,6 +44,7 @@
             "name": "私聊消息",
             "function": "cq_event_private_message",
             "priority": 30000
+            // "priority": 20000
         },
         {
             "id": 2,

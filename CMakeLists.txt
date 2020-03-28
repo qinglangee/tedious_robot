@@ -14,14 +14,19 @@ string(STRIP "${APP_ID}" APP_ID)
 # 添加子目录
 
 # 第一个应用 无聊机器人
-cq_set_app_id(${APP_ID}) # 设置 app id, 必须
-file(GLOB_RECURSE SOURCE_FILES src/*.cpp) # 递归搜索 src 目录中的源文件, 可根据实际情况修改
-include_directories(src/include) # 设置 src 目录为包含目录, 可根据实际情况修改
+# cq_set_app_id(${APP_ID}) # 设置 app id, 必须
+# file(GLOB_RECURSE SOURCE_FILES src/*.cpp) # 递归搜索 src 目录中的源文件, 可根据实际情况修改
+# include_directories(src/include) # 设置 src 目录为包含目录, 可根据实际情况修改
 
 # 第二个应用 迎新小弟弟
 # cq_set_app_id("com.xmalloc.cqapp.greet") # 设置 app id, 必须
 # file(GLOB_RECURSE SOURCE_FILES src2/*.cpp) # 递归搜索 src 目录中的源文件, 可根据实际情况修改
 # include_directories(src2/include) # 设置 src 目录为包含目录, 可根据实际情况修改
+
+# 第三个应用 命令聊天
+cq_set_app_id("com.xmalloc.cqapp.cmd") # 设置 app id, 必须
+file(GLOB_RECURSE SOURCE_FILES src3/*.cpp) # 递归搜索 src 目录中的源文件, 可根据实际情况修改
+include_directories(src3/include) # 设置 src 目录为包含目录, 可根据实际情况修改
 
 
 
@@ -43,6 +48,10 @@ endif ()
 
 
 # 添加链接库和include文件目录
+add_subdirectory(zhlib)
+target_link_libraries(app zhlib)
+target_include_directories(app PUBLIC zhlib/include)
+
 add_subdirectory(thirdpart/myzh)
 target_link_libraries(app ohmyname)
 target_include_directories(app PUBLIC thirdpart/myzh/src)
@@ -58,6 +67,11 @@ target_include_directories(app PUBLIC thirdpart/cjsonobject/src)
 add_subdirectory(thirdpart/fileutils)
 target_link_libraries(app fileutils)
 target_include_directories(app PUBLIC thirdpart/fileutils/src)
+
+
+add_subdirectory(thirdpart/utils)
+target_link_libraries(app zhutils)
+target_include_directories(app PUBLIC thirdpart/utils/include)
 
 
 

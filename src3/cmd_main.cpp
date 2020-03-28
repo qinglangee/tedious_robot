@@ -5,8 +5,9 @@
 
 #include <cqcppsdk/cqcppsdk.h>
 
-#include "tiaoxi.hpp"
-#include "group_timer.hpp"
+#include "command.hpp"
+#include "group_at.hpp"
+#include "message_util.hpp"
 
 using namespace cq;
 using namespace std;
@@ -17,8 +18,7 @@ using MessageSegment = cq::message::MessageSegment;
 
 CQ_INIT {
     on_enable([] { 
-        xmalloc::startTiaoxiThread();
-        logging::info("启用", "无聊插件已启用"); 
+        logging::info("启用", "命令聊天插件已启用"); 
         
     });
 
@@ -28,29 +28,28 @@ CQ_INIT {
                 logging::info_success("zhch", "杂鱼命令 id: " + to_string(event.user_id) );
                 return;
             }
-            xmalloc::tiaoxiCmd(event);
+            xmalloc::processMessage(event);
         } catch (ApiError &err) {
             logging::warning("私聊", "私聊消息处理出错, 错误码: " + to_string(err.code));
         }
     });
 
     on_message([](const MessageEvent &event) {
-        // logging::debug("消息", "收到消息: " + event.message + "\n实际类型: " + typeid(event).name());
+        logging::debug("消息", "收到消息: " + event.message + "\n实际类型: " + typeid(event).name());
     });
 
     on_group_message([](const GroupMessageEvent &event) {
-        static const set<int64_t> ENABLED_GROUPS = {132847879, 1234567};
-        if (ENABLED_GROUPS.count(event.group_id) == 0) return; // 不在启用的群中, 忽略
+        int64_t selfId = 3556607653;  // 小软软 ID
 
         try {
-            // send_message(event.target, event.message); // 复读
-            // auto mem_list = get_group_member_list(event.group_id); // 获取群成员列表
-            // string msg;
-            // for (auto i = 0; i < min(10, static_cast<int>(mem_list.size())); i++) {
-            //     msg += "昵称: " + mem_list[i].nickname + "\n"; // 拼接前十个成员的昵称
-            // }
-            // send_group_message(event.group_id, "see you"); // 发送群消息
-            // send_group_message(132847879, "next time"); // 发送群消息
+            Message m = Message(event.message);
+            
+            if(xmalloc::messageAt(m, selfId)){
+                logging::info_success("zhch", "m: " + event.message );
+                
+                xmalloc::responseAtMessage(event);
+            }
+            
             
         } catch (ApiError &err) { // 忽略发送失败
             logging::warning("群聊", "群聊消息复读失败, 错误码: " + to_string(err.code));
@@ -61,14 +60,6 @@ CQ_INIT {
         // event.block(); // 阻止当前事件传递到下一个插件
     });
 
-    on_group_upload([](const auto &event) { // 可以使用 auto 自动推断类型
-        // stringstream ss;
-        // ss << "您上传了一个文件, 文件名: " << event.file.name << ", 大小(字节): " << event.file.size;
-        // try {
-        //     send_message(event.target, ss.str());
-        // } catch (ApiError &) {
-        // }
-    });
 }
 
 CQ_MENU(menu_demo_1) {
