@@ -25,7 +25,6 @@ CQ_INIT {
     on_private_message([](const PrivateMessageEvent &event) {
         try {
             if(event.user_id != 61804888){
-                logging::info_success("zhch", "杂鱼命令 id: " + to_string(event.user_id) );
                 return;
             }
             xmalloc::tiaoxiCmd(event);

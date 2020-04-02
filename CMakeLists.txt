@@ -24,9 +24,14 @@ string(STRIP "${APP_ID}" APP_ID)
 # include_directories(src2/include) # 设置 src 目录为包含目录, 可根据实际情况修改
 
 # 第三个应用 命令聊天
-cq_set_app_id("com.xmalloc.cqapp.cmd") # 设置 app id, 必须
-file(GLOB_RECURSE SOURCE_FILES src3/*.cpp) # 递归搜索 src 目录中的源文件, 可根据实际情况修改
-include_directories(src3/include) # 设置 src 目录为包含目录, 可根据实际情况修改
+# cq_set_app_id("com.xmalloc.cqapp.cmd") # 设置 app id, 必须
+# file(GLOB_RECURSE SOURCE_FILES src3/*.cpp) # 递归搜索 src 目录中的源文件, 可根据实际情况修改
+# include_directories(src3/include) # 设置 src 目录为包含目录, 可根据实际情况修改
+
+# 第四个应用 优惠播放机
+cq_set_app_id("com.xmalloc.cqapp.adv") # 设置 app id, 必须
+file(GLOB_RECURSE SOURCE_FILES src4/*.cpp) # 递归搜索 src 目录中的源文件, 可根据实际情况修改
+include_directories(src4/include) # 设置 src 目录为包含目录, 可根据实际情况修改
 
 
 

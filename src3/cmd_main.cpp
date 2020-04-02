@@ -39,7 +39,7 @@ CQ_INIT {
     });
 
     on_group_message([](const GroupMessageEvent &event) {
-        int64_t selfId = 3556607653;  // 小软软 ID
+        int64_t selfId = get_login_user_id();  // 登录号 小软软 ID
 
         try {
             Message m = Message(event.message);

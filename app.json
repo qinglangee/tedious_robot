@@ -4,7 +4,8 @@
     "apiver": 9,
     // "name": "无聊机器人",
     // "name": "迎新小弟弟",
-    "name": "命令聊天",
+    // "name": "命令聊天",
+    "name": "优惠播放机",
     "version": "1.0.0",
     "version_id": 1,
     "author": "xmalloc",
@@ -43,8 +44,8 @@
             "type": 21,
             "name": "私聊消息",
             "function": "cq_event_private_message",
-            "priority": 30000
-            // "priority": 20000
+            // "priority": 30000
+            "priority": 20000
         },
         {
             "id": 2,

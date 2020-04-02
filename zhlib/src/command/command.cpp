@@ -19,26 +19,26 @@ namespace xmalloc {
     void processMessage(const PrivateMessageEvent &event) {
         
 
-        if(event.message.find_first_of("r ") == 0){
+        if(event.message.find("r ") == 0){
 
             auto msgid = send_private_message(event.user_id, event.message); // 直接复读消息
             logging::info_success("私聊", "私聊消息复读完成, 消息 Id: " + to_string(msgid));
             auto msgid2 = send_message(event.target,
                         MessageSegment::face(111) + "这是通过 message 模块构造的消息~"); // 使用 message 模块构造消息
             logging::info_success("私聊", "私聊消息复读完成, 消息 Id: " + to_string(msgid2));
-        }else if(event.message.find_first_of("!") == 0){
+        }else if(event.message.find("!") == 0){
             forwardGroupMessage(event);
-        }else if(event.message.find_first_of("cmd ") == 0){
+        }else if(event.message.find("cmd ") == 0){
             auto groups = get_group_list();
             for(size_t i = 0; i < groups.size(); i++){
-                cq::Group g = groups[i];
-                logging::info_success("zhch", "群名字: " + to_string(g.group_name));
+                // cq::Group g = groups[i];
+                // logging::info_success("zhch", "群名字: " + to_string(g.group_name));
 
-                auto members = get_group_member_list(g.group_id);
-                for(size_t j = 0; j < members.size(); j++){
-                    cq::GroupMember m = members[j];
-                    logging::info_success("zhch", "群员名字: " + to_string(m.nickname) + " qq号：" + to_string(m.user_id));
-                }
+                // auto members = get_group_member_list(g.group_id);
+                // for(size_t j = 0; j < members.size(); j++){
+                //     cq::GroupMember m = members[j];
+                //     logging::info_success("zhch", "群员名字: " + to_string(m.nickname) + " qq号：" + to_string(m.user_id));
+                // }
             }
         }
 
