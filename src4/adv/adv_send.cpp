@@ -20,7 +20,7 @@ namespace xmalloc::adv{
         string cmd = event.message.substr(4);
 
         if(cmd.find("start") == 0){
-            startAdvThread();
+            startAdvThread(cmd);
             send_message(event.target, MessageSegment::face(111) + "优惠播放线程开启.");
         }else if(cmd.find("end") == 0 ){
             stopAdvThread();

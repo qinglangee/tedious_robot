@@ -12,7 +12,7 @@ namespace xmalloc::adv{
     void advCmd(const PrivateMessageEvent &event);
 
     // adv_thread.cpp
-    void startAdvThread();
+    void startAdvThread(string cmd);
     void stopAdvThread();
     void startGroupInfoCheck();
 }

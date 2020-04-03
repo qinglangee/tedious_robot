@@ -22,16 +22,25 @@ using MessageSegment = cq::message::MessageSegment;
 
 namespace xmalloc::adv{
     bool running = false;
+    int64_t sendGroupId = 0; // 要发送优惠的群号 0：没有 1：全部 其它：按群号来
+
+
+    bool isDebug = true;  // 调试控制变量
 
 
     unsigned int __stdcall advSendThread(void *pPM);
     unsigned int __stdcall groupInfoCheckThread(void *pPM);
 
     // 启动处理广告发送的线程
-    void startAdvThread(){
+    void startAdvThread(string cmd){
         if(running){
             logging::info("zhch", "优惠播放处理线程已经在运行。");
             return;
+        }
+
+        if(cmd.find("start ") == 0){
+            string groupIdStr = cmd.substr(6);
+            sendGroupId = stoll(groupIdStr, 0, 10);
         }
 
         _beginthreadex(NULL, 0, advSendThread, NULL, 0, NULL);
@@ -57,9 +66,7 @@ namespace xmalloc::adv{
         for(int i=0;i<groups.size();i++){
             xutils::sys::sleep(1000); // 停一会，调用API不是太频繁。
             Group g = groups[i];
-            logging::info("群组", to_string(g.group_id) + " " + g.group_name + " num:" + to_string(g.member_count));
             Group info = get_group_info(g.group_id);
-            logging::info("群组", "num: " + to_string(info.member_count));
 
             // 读取群组信息
             neb::CJsonObject groupJson = group::readGroupMembers(info.group_id);
@@ -67,11 +74,13 @@ namespace xmalloc::adv{
             groupJson.Get("member_count", count);
 
             if(info.member_count != count){
-                logging::info("zhch", "count is: " + to_string(count));
+                logging::info("群组", to_string(g.group_id) + " " + g.group_name + " now:" + to_string(info.member_count) + " get:" + to_string(count));
                 // 组员信息
                 vector<GroupMember> members = get_group_member_list(info.group_id);
                 group::writeGroupMembers(info, members);
                 
+            }else{
+                logging::info("===== 群组", to_string(g.group_id) + " " + g.group_name + " now:" + to_string(info.member_count) + " 不需要更新");
             }
 
         }
@@ -80,15 +89,39 @@ namespace xmalloc::adv{
         return 0;
     }
 
-    // 处理广告发送的线程
+    // 处理优惠发送的线程
     unsigned int __stdcall advSendThread(void *pPM){
+        if(sendGroupId == 0){
+            logging::info_success("优惠发送", "群号为0。");
+            return 0;
+        }
         running = true;
 
         logging::info_success("S线程开始", "启动了优惠播放处理线程。");
-        while(running){
 
-            logging::info("zhch", "发送优惠。");
-            xutils::sys::sleep(3000);
+        neb::CJsonObject groupJson = group::readGroupMembers(sendGroupId);
+        neb::CJsonObject membersJson; groupJson.Get("members", membersJson);
+        neb::CJsonObject memberJson;
+        int index = 0;
+
+        bool hasNext = true;
+
+        while(running && hasNext){
+            membersJson.Get(index, memberJson);
+
+            string name;memberJson.Get("name", name);
+
+            logging::info("zhch", "发送优惠。name:" + name);
+            memberJson.Replace("sended", 1);
+            membersJson.Replace(index, memberJson);
+            groupJson.Replace("members", membersJson);
+
+            group::writeGroupMembersJson(groupJson);
+
+            xutils::sys::debug_sleep(3000, isDebug);
+
+            index++;
+            hasNext = index < membersJson.GetArraySize();
         }
 
         logging::info_success("E线程结束", "优惠播放循环结束，退出。");

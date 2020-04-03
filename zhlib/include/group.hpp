@@ -8,6 +8,8 @@ using namespace std;
 
 namespace xmalloc::group {
     /**========group_info.cpp======================================*/
+    // 把组员json对象写入文件
+    void writeGroupMembersJson(neb::CJsonObject json);
     // 把组员信息写入文件
     void writeGroupMembers(Group group, vector<GroupMember> members);
     // 从文件读入组员信息

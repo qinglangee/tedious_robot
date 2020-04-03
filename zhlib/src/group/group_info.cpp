@@ -6,6 +6,8 @@
 #include "CJsonObject.hpp"
 #include "fileutils.hpp"
 
+#include "group.hpp"
+
 using namespace cq;
 using namespace std;
 
@@ -14,8 +16,6 @@ namespace xmalloc::group {
 
     // 把组员信息写入文件
     void writeGroupMembers(Group group, vector<GroupMember> members){
-        string filepath = get_app_directory() + "group/mems_" + to_string(group.group_id);
-        string prettyFilepath = get_app_directory() + "group/pretty_" + to_string(group.group_id);
         
         // 写入群组信息
         neb::CJsonObject oJson("{}");
@@ -24,8 +24,21 @@ namespace xmalloc::group {
         oJson.Add("member_count", group.member_count);
         neb::CJsonObject membersJson = convertMembersToJson(members);
         oJson.Add("members", membersJson);
-        xutils::file::writeFile(oJson.ToString(), filepath);
-        xutils::file::writeFile(oJson.ToFormattedString(), prettyFilepath);
+
+        writeGroupMembersJson(oJson);
+    }
+    // json写入文件
+    void writeGroupMembersJson(neb::CJsonObject json){
+        int64_t groupId;
+        json.Get("group_id", groupId);
+        
+        string filepath = get_app_directory() + "group/mems_" + to_string(groupId);
+        string prettyFilepath = get_app_directory() + "group/pretty_" + to_string(groupId);
+
+        
+        xutils::file::writeFile(json.ToString(), filepath);
+        xutils::file::writeFile(json.ToFormattedString(), prettyFilepath);
+
     }
     // 从文件读入组员信息
     neb::CJsonObject readGroupMembers(int64_t groupId){
@@ -49,6 +62,10 @@ namespace xmalloc::group {
             GroupMember member = members[i];
             neb::CJsonObject sub("{}");
             sub.Add("name", member.nickname);
+
+
+            
+            sub.Add("sended", 0); // 优惠发送标记信息
             json.Add(sub);
 
         }
