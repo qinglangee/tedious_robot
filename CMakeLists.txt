@@ -4,6 +4,7 @@ project(cqcppsdk-demo) # 填写项目名称
 set(CMAKE_CXX_STANDARD 17) # 设置 C++ 标准版本为 C++17, 必须
 
 include(extern/cqcppsdk/cqcppsdk.cmake) # 包含 SDK 的 CMake 脚本, 必须
+include(zh_custom.cmake) # 自定义的一些方法
 
 #include_directories(src) # 设置 src 目录为包含目录, 可根据实际情况修改
 
@@ -38,6 +39,7 @@ include_directories(src4/include) # 设置 src 目录为包含目录, 可根据�
 if (CQ_CAN_BUILD_STD_MODE)
 cq_add_std_app(${SOURCE_FILES}) # 添加 std 模式的动态链接库构建目标
 cq_install_std_app("d:/software/CQPro/")
+message(STATUS "lalalalalalalla")
 endif ()
 
 # 添加 dev 模式的可执行文件构建目标
@@ -45,38 +47,20 @@ endif ()
 
 
 
-# 添加模块的示例方式，这个好像是不行的，与原来的冲突
-# All uses of target_link_libraries with a target must be [build]   either all-keyword or all-plain
-# add_subdirectory(MathFunctions)
-# list(APPEND EXTRA_LIBS ohmyname)
-# target_link_libraries(app PUBLIC ${EXTRA_LIBS})
-
 
 # 添加链接库和include文件目录
-add_subdirectory(zhlib)
-target_link_libraries(app zhlib)
-target_include_directories(app PUBLIC zhlib/include)
-
-add_subdirectory(thirdpart/myzh)
-target_link_libraries(app ohmyname)
-target_include_directories(app PUBLIC thirdpart/myzh/src)
-
-# target_link_libraries(app_dev ohmyname)
+link_zhlib(0)
 
 
-add_subdirectory(thirdpart/cjsonobject)
-target_link_libraries(app cjsonobject)
-target_include_directories(app PUBLIC thirdpart/cjsonobject/src)
 
+link_third_part(app fileutils "src" 0)
+link_third_part(app zhutils include 0)
 
-add_subdirectory(thirdpart/fileutils)
-target_link_libraries(app fileutils)
-target_include_directories(app PUBLIC thirdpart/fileutils/src)
+link_third_part(app myzh src 0)
 
+link_third_part(app cjsonobject src 0)
+link_third_part(app sqlite3 "" 0)
 
-add_subdirectory(thirdpart/utils)
-target_link_libraries(app zhutils)
-target_include_directories(app PUBLIC thirdpart/utils/include)
 
 
 

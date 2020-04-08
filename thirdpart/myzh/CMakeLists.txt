@@ -4,6 +4,6 @@
 aux_source_directory(./src DIR_LIB_SRCS)
 
 # 生成链接库
-add_library (ohmyname ${DIR_LIB_SRCS})
+add_library (myzh ${DIR_LIB_SRCS})
 
-target_compile_options(ohmyname  PRIVATE  $<$<CXX_COMPILER_ID:MSVC>:/utf-8>)
+target_compile_options(myzh  PRIVATE  $<$<CXX_COMPILER_ID:MSVC>:/utf-8>)

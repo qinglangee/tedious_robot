@@ -12,6 +12,7 @@
 
 #include <sys_util.hpp>
 #include "group.hpp"
+#include "sqlite3.h"
 
 using namespace xmalloc;
 using namespace cq;
@@ -30,6 +31,25 @@ namespace xmalloc::adv{
 
     unsigned int __stdcall advSendThread(void *pPM);
     unsigned int __stdcall groupInfoCheckThread(void *pPM);
+
+    void ttt(){
+        sqlite3 *db;
+        char *zErrMsg = 0;
+        int rc;
+        string name = get_app_directory() + "test_abcdefg.db";
+
+        rc = sqlite3_open(name.c_str(), &db);
+
+        if( rc ){
+            fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+            logging::info("zhch", "打开数据库出错。" + string(sqlite3_errmsg(db)));
+            exit(0);
+        }else{
+            logging::info("zhch", "打开数据库成功。");
+            fprintf(stderr, "Opened database successfully\n");
+        }
+        sqlite3_close(db);
+    }
 
     // 启动处理广告发送的线程
     void startAdvThread(string cmd){
@@ -84,6 +104,8 @@ namespace xmalloc::adv{
             }
 
         }
+
+        ttt();
 
         logging::info_success("E线程结束", "优惠播放-群员信息检测结束。");
         return 0;
