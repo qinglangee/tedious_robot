@@ -3,7 +3,7 @@
     "ret": 1,
     "apiver": 9,
     // "name": "无聊机器人",
-    "name": "优惠播放机",
+    "name": "${APP_NAME}",
     "version": "1.0.0",
     "version_id": 1,
     "author": "xmalloc",
@@ -44,7 +44,7 @@
             "function": "cq_event_private_message",
             // 公共处理 30000 ，每个应用 20000，  没人处理的再交给公共
             // "priority": 30000
-            "priority": 20000
+            "priority": ${APP_PRIVATE_MESSAGE_PRIORITY}
         },
         {
             "id": 2,

@@ -1,4 +1,5 @@
 
+# 链接内部的第三方库
 # needBuild 0:不编译  1:需要编译 
 function (link_third_part target thirdPartName includeFold needBuild)
     if(${needBuild} LESS 1)
@@ -27,6 +28,14 @@ function(link_zhlib needBuild)
     target_include_directories(app PUBLIC zhlib/include)
 endfunction()
 
+# 切换应用对应的信息
+function(set_app_info USER_APP_ID SRC_DIR ARG_NAME ARG_PRIORITY)
+    cq_set_app_id(${USER_APP_ID}) # 设置 app id, 必须
+    file(GLOB_RECURSE SOURCE_FILES ${SRC_DIR}/*.cpp) # 递归搜索 src 目录中的源文件, 可根据实际情况修改
+    include_directories(${SRC_DIR}/include) # 设置 src 目录为包含目录, 可根据实际情况修改
 
-# test
-# argument_tester(arg0 arg1 arg2 arg3)
+    SET(APP_NAME ${ARG_NAME})
+    SET(APP_PRIVATE_MESSAGE_PRIORITY ${ARG_PRIORITY})
+
+    configure_file ( "${PROJECT_SOURCE_DIR}/app.json.demo" "${PROJECT_SOURCE_DIR}/app.json" )
+endfunction()

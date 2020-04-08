@@ -15,24 +15,12 @@ string(STRIP "${APP_ID}" APP_ID)
 # 添加子目录
 
 # 第一个应用 无聊机器人
-# cq_set_app_id(${APP_ID}) # 设置 app id, 必须
-# file(GLOB_RECURSE SOURCE_FILES src/*.cpp) # 递归搜索 src 目录中的源文件, 可根据实际情况修改
-# include_directories(src/include) # 设置 src 目录为包含目录, 可根据实际情况修改
+# set_app_info(${APP_ID} src "无聊机器人" 20000)
+# set_app_info("com.xmalloc.cqapp.greet" src2 "迎新小弟弟" 30000)
+# set_app_info("com.xmalloc.cqapp.cmd" src3 "命令和聊天" 30000)
+set_app_info("com.xmalloc.cqapp.adv" src4 "优惠播放机" 20000)
 
-# 第二个应用 迎新小弟弟
-# cq_set_app_id("com.xmalloc.cqapp.greet") # 设置 app id, 必须
-# file(GLOB_RECURSE SOURCE_FILES src2/*.cpp) # 递归搜索 src 目录中的源文件, 可根据实际情况修改
-# include_directories(src2/include) # 设置 src 目录为包含目录, 可根据实际情况修改
 
-# 第三个应用 命令聊天
-# cq_set_app_id("com.xmalloc.cqapp.cmd") # 设置 app id, 必须
-# file(GLOB_RECURSE SOURCE_FILES src3/*.cpp) # 递归搜索 src 目录中的源文件, 可根据实际情况修改
-# include_directories(src3/include) # 设置 src 目录为包含目录, 可根据实际情况修改
-
-# 第四个应用 优惠播放机
-cq_set_app_id("com.xmalloc.cqapp.adv") # 设置 app id, 必须
-file(GLOB_RECURSE SOURCE_FILES src4/*.cpp) # 递归搜索 src 目录中的源文件, 可根据实际情况修改
-include_directories(src4/include) # 设置 src 目录为包含目录, 可根据实际情况修改
 
 
 
