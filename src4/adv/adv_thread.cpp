@@ -12,7 +12,8 @@
 
 #include <sys_util.hpp>
 #include "group.hpp"
-#include "sqlite3.h"
+#include "adv_dao.hpp"
+#include "adv_dto.hpp"
 
 using namespace xmalloc;
 using namespace cq;
@@ -32,24 +33,6 @@ namespace xmalloc::adv{
     unsigned int __stdcall advSendThread(void *pPM);
     unsigned int __stdcall groupInfoCheckThread(void *pPM);
 
-    void ttt(){
-        sqlite3 *db;
-        char *zErrMsg = 0;
-        int rc;
-        string name = get_app_directory() + "test_abcdefg.db";
-
-        rc = sqlite3_open(name.c_str(), &db);
-
-        if( rc ){
-            fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
-            logging::info("zhch", "打开数据库出错。" + string(sqlite3_errmsg(db)));
-            exit(0);
-        }else{
-            logging::info("zhch", "打开数据库成功。");
-            fprintf(stderr, "Opened database successfully\n");
-        }
-        sqlite3_close(db);
-    }
 
     // 启动处理广告发送的线程
     void startAdvThread(string cmd){
@@ -84,7 +67,7 @@ namespace xmalloc::adv{
         logging::info_success("S线程开始", "优惠播放-启动群员信息检测。");
         vector<Group> groups = get_group_list();
         for(int i=0;i<groups.size();i++){
-            xutils::sys::sleep(1000); // 停一会，调用API不是太频繁。
+            xutils::sys::sleep(1000); // 停一会，调用API不要太频繁。
             Group g = groups[i];
             Group info = get_group_info(g.group_id);
 
@@ -100,12 +83,24 @@ namespace xmalloc::adv{
                 group::writeGroupMembers(info, members);
                 
             }else{
-                logging::info("===== 群组", to_string(g.group_id) + " " + g.group_name + " now:" + to_string(info.member_count) + " 不需要更新");
+                logging::info("====== 群组", to_string(g.group_id) + " " + g.group_name + " now:" + to_string(info.member_count) + " 不需要更新");
+            }
+
+
+            int memCount = getGroupMemberCount(info.group_id);
+            if(memCount == 0){
+                logging::info("群组", "没有找到组信息 id " + to_string(info.group_id));
+                GroupExt gg = GroupExt();
+                gg.group_id = info.group_id;
+                gg.group_name = info.group_name;
+                gg.member_count = info.member_count;
+                insertGroupInfo(gg);
+            }else{
+
+                logging::info("群组", "组信息 id " + to_string(info.group_id) + "  count " + to_string(memCount));
             }
 
         }
-
-        ttt();
 
         logging::info_success("E线程结束", "优惠播放-群员信息检测结束。");
         return 0;
