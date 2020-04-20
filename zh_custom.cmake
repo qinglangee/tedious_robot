@@ -29,17 +29,17 @@ function(link_zhlib needBuild)
 endfunction()
 
 # 切换应用对应的信息
-# function(set_app_info USER_APP_ID SRC_DIR ARG_NAME ARG_PRIORITY)
-#     message(STATUS "step  01")
-#     cq_set_app_id(${USER_APP_ID}) # 设置 app id, 必须
-#     message(STATUS "step  02 SRC_DIR is ${SRC_DIR}")
-#     file(GLOB_RECURSE SOURCE_FILES ${SRC_DIR}/*.cpp) # 递归搜索 src 目录中的源文件, 可根据实际情况修改
-#     message(STATUS "step  03 src files is  ${SOURCE_FILES}")
-#     include_directories(${SRC_DIR}/include) # 设置 src 目录为包含目录, 可根据实际情况修改
-#     message(STATUS "step  04")
+function(set_app_info ARG_APP_ID SRC_DIR ARG_NAME ARG_PRIORITY)
+    message(STATUS "step  01")
+    
+    set(USER_APP_ID ${ARG_APP_ID} PARENT_SCOPE)
+    message(STATUS "step  02 SRC_DIR is ${SRC_DIR}")
+    file(GLOB_RECURSE fun_SOURCE_FILES ${SRC_DIR}/*.cpp) # 递归搜索 src 目录中的源文件, 可根据实际情况修改
+    set(SOURCE_FILES ${fun_SOURCE_FILES} PARENT_SCOPE)
+    include_directories(${SRC_DIR}/include) # 设置 src 目录为包含目录, 可根据实际情况修改
 
-#     SET(APP_NAME ${ARG_NAME})
-#     SET(APP_PRIVATE_MESSAGE_PRIORITY ${ARG_PRIORITY})
+    SET(APP_NAME ${ARG_NAME})
+    SET(APP_PRIVATE_MESSAGE_PRIORITY ${ARG_PRIORITY})
 
-#     configure_file ( "${PROJECT_SOURCE_DIR}/app.json.demo" "${PROJECT_SOURCE_DIR}/app.json" )
-# endfunction()
+    configure_file ( "${PROJECT_SOURCE_DIR}/app.json.demo" "${PROJECT_SOURCE_DIR}/app.json" )
+endfunction()
