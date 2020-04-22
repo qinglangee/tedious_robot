@@ -16,13 +16,13 @@ namespace xutils::datetime {
         // 线程不安全版本
         // tm* t= localtime(&_Time);
 
-        ostringstream oss;
-        oss<<t.tm_year + 1900<<"-"<<t.tm_mon + 1<<"-"<<t.tm_mday<<" "<<t.tm_hour<<":"<<t.tm_min<<":"<<t.tm_sec;
+        // ostringstream oss;
+        // oss<<t.tm_year + 1900<<"-"<<t.tm_mon + 1<<"-"<<t.tm_mday<<" "<<t.tm_hour<<":"<<t.tm_min<<":"<<t.tm_sec;
         
-        return oss.str();
+        // return oss.str();
 
-        // string result = xutils::str::format("%d-%02d-%02d %02d:%02d:%02d", t.tm_year + 1900,t.tm_mon + 1,t.tm_mday,t.tm_hour,t.tm_min,t.tm_sec);
-        // return result;
+        string result = xutils::str::format("%d-%02d-%02d %02d:%02d:%02d", t.tm_year + 1900,t.tm_mon + 1,t.tm_mday,t.tm_hour,t.tm_min,t.tm_sec);
+        return result;
 
         // return "";
     }
