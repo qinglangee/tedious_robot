@@ -6,6 +6,7 @@
 #include <cqcppsdk/cqcppsdk.h>
 
 #include "adv.hpp"
+#include "zhlog.hpp"
 
 
 using namespace cq;
@@ -17,6 +18,7 @@ using MessageSegment = cq::message::MessageSegment;
 
 CQ_INIT {
     on_enable([] { 
+        xmalloc::log::ZhLog::logFile = get_app_directory() + "log/output.txt";
         xmalloc::adv::startGroupInfoCheck();
         logging::info("启用", "优惠播放机插件已启用"); 
         

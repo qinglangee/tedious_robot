@@ -5,14 +5,21 @@
 #include "sqlite3.h"
 #include "adv_dto.hpp"
 
+using namespace std;
+
 using namespace cq;
 
 namespace xmalloc::adv{
+    string dbFile = "adv.db";
+
     int getGroupMemberCount(int64_t  groupId){
+        string dbPath = get_app_directory() + dbFile;
+
+        throw runtime_error("这是一个故意扔出的错误。");
 
         sqlite3* conn = NULL;
         // 打开数据库
-        int result = sqlite3_open("./my.db", &conn);
+        int result = sqlite3_open(dbPath.c_str(), &conn);
         if(result != SQLITE_OK){
             sqlite3_close(conn);
             return 1;
@@ -43,15 +50,18 @@ namespace xmalloc::adv{
 
         sqlite3_finalize(stmt2);
         sqlite3_close(conn);
+            logging::info("sql", "get count run to before return " + to_string(count));
         return count;
     }
     int updateGroupInfo(const GroupExt &group){
         return 0;
     }
     int insertGroupInfo(const GroupExt &group){
+        string dbPath = get_app_directory() + dbFile;
+        logging::info("sql", "insert group info  001");
         sqlite3* conn = NULL;
         // 打开数据库
-        int result = sqlite3_open("./my.db", &conn);
+        int result = sqlite3_open(dbPath.c_str(), &conn);
         if(result != SQLITE_OK){
             sqlite3_close(conn);
             return 1;
@@ -70,6 +80,7 @@ namespace xmalloc::adv{
 
         sqlite3_finalize(stmt2);
         sqlite3_close(conn);
+        logging::info("sql", "insert group info  before return");
         return 0;
     }
 }

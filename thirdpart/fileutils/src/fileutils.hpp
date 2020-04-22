@@ -5,10 +5,12 @@
 
 using namespace std;
 namespace xutils::file{
-    // readwrite.cpp
+    // ===== readwrite.cpp =======================
     void writeFile(string content, string file);
+    void appendFile(string content, string file);
     vector<string> readFile(string file);
 
-    // filestat.cpp
+
+    // ===== filestat.cpp =======================
     bool fileExist(string file);
 }

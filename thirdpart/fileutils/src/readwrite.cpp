@@ -18,6 +18,14 @@ namespace xutils::file{
         ofs.close();
     }
 
+    // 文件内容追加
+    void appendFile(string content, string file){
+        ofstream ofs;
+        ofs.open(file, ios::app);
+        ofs << content;
+        ofs.close();
+    }
+
     // // 读文件
     vector<string> readFile(string file){
         vector<string> result = {};

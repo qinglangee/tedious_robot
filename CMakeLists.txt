@@ -43,19 +43,26 @@ endif ()
 
 
 # 添加链接库和include文件目录
-link_zhlib(0)
+link_zhlib(1)
+# add_subdirectory(zhlib)
+# target_link_libraries(app zhlib)
+# target_include_directories(app PUBLIC zhlib/include)
 
 
 
-link_third_part(app fileutils "src" 0)
-link_third_part(app zhutils include 0)
+
+link_third_part(app fileutils "src" 1)
+# link_third_part(app zhutils include 1)
 
 link_third_part(app myzh src 0)
 
 link_third_part(app cjsonobject src 0)
 link_third_part(app sqlite3 "" 0)
+link_third_part(app zhsqlite3 "src" 1)
 
-
+add_subdirectory(thirdpart/zhutils)
+target_link_libraries(app zhutils)
+target_include_directories(app PUBLIC thirdpart/zhutils/include)
 
 
 

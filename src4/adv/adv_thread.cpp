@@ -11,6 +11,7 @@
 #include "CJsonObject.hpp"
 
 #include <sys_util.hpp>
+#include "zhlog.hpp"
 #include "group.hpp"
 #include "adv_dao.hpp"
 #include "adv_dto.hpp"
@@ -18,9 +19,11 @@
 using namespace xmalloc;
 using namespace cq;
 using namespace std;
+using namespace xmalloc::log;
 using Message = cq::message::Message;
 using MessageSegment = cq::message::MessageSegment;
 
+using zhl = xmalloc::log::ZhLog;
 
 namespace xmalloc::adv{
     bool running = false;
@@ -62,9 +65,12 @@ namespace xmalloc::adv{
 
     // 群员信息检测
     unsigned int __stdcall groupInfoCheckThread(void *pPM){
+        // Log::info("","");
+        zhl::info("11","22");
+        zhl::info("44");
         xutils::sys::sleep(3000); // 停一会，错过启动信息高峰。
 
-        logging::info_success("S线程开始", "优惠播放-启动群员信息检测。");
+        zhl::info_success("S线程开始", "优惠播放-启动群员信息检测。");
         vector<Group> groups = get_group_list();
         for(int i=0;i<groups.size();i++){
             xutils::sys::sleep(1000); // 停一会，调用API不要太频繁。
@@ -77,19 +83,26 @@ namespace xmalloc::adv{
             groupJson.Get("member_count", count);
 
             if(info.member_count != count){
-                logging::info("群组", to_string(g.group_id) + " " + g.group_name + " now:" + to_string(info.member_count) + " get:" + to_string(count));
+                zhl::info("群组", to_string(g.group_id) + " " + g.group_name + " now:" + to_string(info.member_count) + " get:" + to_string(count));
                 // 组员信息
                 vector<GroupMember> members = get_group_member_list(info.group_id);
                 group::writeGroupMembers(info, members);
                 
             }else{
-                logging::info("====== 群组", to_string(g.group_id) + " " + g.group_name + " now:" + to_string(info.member_count) + " 不需要更新");
+                zhl::info("====== 群组", to_string(g.group_id) + " " + g.group_name + " now:" + to_string(info.member_count) + " 不需要更新");
             }
 
 
-            int memCount = getGroupMemberCount(info.group_id);
+            int memCount = 0;
+            try{
+
+                memCount = getGroupMemberCount(info.group_id);
+            }catch(runtime_error e){
+
+                zhl::info("群组", "逮到一个错误： " + to_string(e.what()));
+            }
             if(memCount == 0){
-                logging::info("群组", "没有找到组信息 id " + to_string(info.group_id));
+                zhl::info("群组", "没有找到组信息 id " + to_string(info.group_id));
                 GroupExt gg = GroupExt();
                 gg.group_id = info.group_id;
                 gg.group_name = info.group_name;
@@ -97,12 +110,12 @@ namespace xmalloc::adv{
                 insertGroupInfo(gg);
             }else{
 
-                logging::info("群组", "组信息 id " + to_string(info.group_id) + "  count " + to_string(memCount));
+                zhl::info("群组", "组信息 id " + to_string(info.group_id) + "  count " + to_string(memCount));
             }
 
         }
 
-        logging::info_success("E线程结束", "优惠播放-群员信息检测结束。");
+        zhl::info_success("E线程结束", "优惠播放-群员信息检测结束。");
         return 0;
     }
 
