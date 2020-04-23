@@ -11,6 +11,10 @@ add_library (zhlib ${SOURCE_FILES})
 # add_library (zhlib ${DIR_LIB_SRCS})
 target_compile_options(zhlib  PRIVATE  $<$<CXX_COMPILER_ID:MSVC>:/utf-8>)
 target_include_directories(zhlib PUBLIC ../extern/cqcppsdk/include)
+
 target_include_directories(zhlib PUBLIC ../thirdpart/cjsonobject/src)
+target_include_directories(zhlib PUBLIC ../thirdpart/sqlite3)
+
+
 target_include_directories(zhlib PUBLIC ../thirdpart/fileutils/src)
 target_include_directories(zhlib PUBLIC ../thirdpart/zhutils/include)
