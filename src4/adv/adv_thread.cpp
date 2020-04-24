@@ -12,9 +12,12 @@
 
 #include <sys_util.hpp>
 #include "zhlog.hpp"
+#include "string_util.hpp"
 #include "group.hpp"
 #include "adv_dao.hpp"
 #include "adv_dto.hpp"
+
+#include "tmp_filelog.hpp"
 
 using namespace xmalloc;
 using namespace cq;
@@ -24,6 +27,7 @@ using Message = cq::message::Message;
 using MessageSegment = cq::message::MessageSegment;
 
 using zhl = xmalloc::log::ZhLog;
+using namespace xutils::str;
 
 namespace xmalloc::adv{
     bool running = false;
@@ -75,35 +79,44 @@ namespace xmalloc::adv{
                 Group g = groups[i];
                 Group info = get_group_info(g.group_id);
 
-                // 读取群组信息
-                neb::CJsonObject groupJson = group::readGroupMembers(info.group_id);
-                int32_t count;
-                groupJson.Get("member_count", count);
+                // // 读取群组信息
+                // neb::CJsonObject groupJson = group::readGroupMembers(info.group_id);
+                // int32_t count;
+                // groupJson.Get("member_count", count);
 
-                if(info.member_count != count){
-                    zhl::info("群组", to_string(g.group_id) + " " + g.group_name + " now:" + to_string(info.member_count) + " get:" + to_string(count));
-                    // 组员信息
-                    vector<GroupMember> members = get_group_member_list(info.group_id);
-                    group::writeGroupMembers(info, members);
+                // if(info.member_count != count){
+                //     zhl::info("群组", to_string(g.group_id) + " " + g.group_name + " now:" + to_string(info.member_count) + " get:" + to_string(count));
+                //     // 组员信息
+                //     vector<GroupMember> members = get_group_member_list(info.group_id);
+                //     group::writeGroupMembers(info, members);
                     
-                }else{
-                    zhl::info("====== 群组", to_string(g.group_id) + " " + g.group_name + " now:" + to_string(info.member_count) + " 不需要更新");
-                }
+                // }else{
+                //     zhl::info("====== 群组", to_string(g.group_id) + " " + g.group_name + " now:" + to_string(info.member_count) + " 不需要更新");
+                // }
 
 
                 int memCount = 0;
+                memCount = getGroupMemberCount(info.group_id);
+                zhl::info(format("群信息 %s 成员数量 %d 记录数量 %d", info.group_name.c_str(), info.member_count, memCount));
+                
 
-                    memCount = getGroupMemberCount(info.group_id);
-                if(memCount == 0){
-                    zhl::info("群组", "没有找到组信息 id " + to_string(info.group_id));
+                if(memCount < info.member_count){  // 大于真实数量就不管了，有点误差不理他
                     GroupExt gg = GroupExt();
                     gg.group_id = info.group_id;
                     gg.group_name = info.group_name;
                     gg.member_count = info.member_count;
-                    insertGroupInfo(gg);
-                }else{
 
-                    zhl::info("群组", "组信息 id " + to_string(info.group_id) + "  count " + to_string(memCount));
+                    // 组员信息
+                    // vector<GroupMember> members = get_group_member_list(info.group_id);
+                    if(memCount == 0){
+                        zhl::info("群", "没有找到组信息, 插入一条记录。");
+                        insertGroupInfo(gg);
+                        insertGroupMembers();
+                    }else{
+                        zhl::info("群", "===需要更新群信息。");
+                        updateGroupInfo(gg);
+                        updateGroupMembers();
+                    }
                 }
 
             }

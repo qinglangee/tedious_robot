@@ -35,7 +35,7 @@ namespace xmalloc::log {
             logging::warning("WARN", "logFile is empty!!!");
         }else{
             logging::info_success(type, msg);
-            string content = xutils::datetime::nowStr() + " [[" + type + "]] " + msg;
+            string content = xutils::datetime::nowStr() + " [[" + type + "]] " + msg + "\n";
             xutils::file::appendFile(content, logFile);
         }
     }

@@ -11,6 +11,7 @@
 using namespace cq;
 using namespace std;
 
+/** 因为用了数据库，这个类就不需要了。  */
 namespace xmalloc::group {
     neb::CJsonObject convertMembersToJson(vector<GroupMember> members);
 

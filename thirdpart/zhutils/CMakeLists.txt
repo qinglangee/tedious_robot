@@ -4,3 +4,5 @@ include_directories(include) # 设置 src 目录为包含目录, 可根据实际
 # 生成链接库
 add_library (zhutils ${SOURCE_FILES})
 target_compile_options(zhutils  PRIVATE  $<$<CXX_COMPILER_ID:MSVC>:/utf-8>)
+
+target_include_directories(zhutils PUBLIC ../fileutils/src)

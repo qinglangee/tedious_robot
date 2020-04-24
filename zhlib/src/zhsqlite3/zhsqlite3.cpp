@@ -29,7 +29,7 @@ namespace xutils::sqlite {
                 sqlite3_finalize(stmt2);
             }
             sqlite3_close(conn);
-            throw runtime_error("准备 sql statement 的时候不 OK 啊。");
+            throw runtime_error("准备 sql statement 的时候不 OK 啊。" + sqlStr);
         }
         return stmt2;
     }

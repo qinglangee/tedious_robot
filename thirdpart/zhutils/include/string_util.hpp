@@ -1,6 +1,10 @@
 #pragma once
 
 #include <string>
+#include <iostream>
+
+// #include "tmp_filelog.hpp"
+
 
 using namespace std;
 
@@ -14,9 +18,13 @@ namespace xutils::str {
     template<typename ... Args>
     string format(const string& format, Args ... args){
         const size_t size = 1 + snprintf(nullptr, 0, format.c_str(), args ...);  // Extra space for \0
+        // xmalloc::tmplog::TmpLog::info("== " + format + " size:" + to_string(size));
+
         // unique_ptr<char[]> buf(new char[size]);
         char *bytes = new char[size];
         snprintf(bytes, size, format.c_str(), args ...);
-        return string(bytes);
+        string result = string(bytes);
+        // xmalloc::tmplog::TmpLog::info("-- " + result);
+        return result;
     }
 }
