@@ -7,6 +7,7 @@
 
 #include "adv.hpp"
 #include "zhlog.hpp"
+#include "base_dao.hpp"
 
 
 using namespace cq;
@@ -19,6 +20,8 @@ using MessageSegment = cq::message::MessageSegment;
 CQ_INIT {
     on_enable([] { 
         xmalloc::log::ZhLog::logFile = get_app_directory() + "log/output.txt";
+        xmalloc::adv::Config::dbFile = "adv.db";
+
         xmalloc::adv::startGroupInfoCheck();
         logging::info("启用", "优惠播放机插件已启用"); 
         

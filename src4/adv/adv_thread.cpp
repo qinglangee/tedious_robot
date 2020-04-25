@@ -97,8 +97,8 @@ namespace xmalloc::adv{
 
                 int memCount = 0;
                 memCount = getGroupMemberCount(info.group_id);
-                zhl::info(format("群信息 %s 成员数量 %d 记录数量 %d", info.group_name.c_str(), info.member_count, memCount));
-                
+                zhl::info("群", format("群信息 %s id %llu 成员数量 %d 记录数量 %d", info.group_name.c_str(), info.group_id, info.member_count, memCount));
+                                
 
                 if(memCount < info.member_count){  // 大于真实数量就不管了，有点误差不理他
                     GroupExt gg = GroupExt();
@@ -107,15 +107,19 @@ namespace xmalloc::adv{
                     gg.member_count = info.member_count;
 
                     // 组员信息
-                    // vector<GroupMember> members = get_group_member_list(info.group_id);
+                    zhl::info("请求群员信息。");
+                    vector<GroupMember> members;
+                    if(info.group_id == 132847879){
+                        members = get_group_member_list(info.group_id);
+                    }
                     if(memCount == 0){
-                        zhl::info("群", "没有找到组信息, 插入一条记录。");
+                        zhl::info("没有找到组信息, 插入一条记录。");
                         insertGroupInfo(gg);
-                        insertGroupMembers();
+                        insertGroupMembers(members);
                     }else{
-                        zhl::info("群", "===需要更新群信息。");
+                        zhl::info("===更新群信息。");
                         updateGroupInfo(gg);
-                        updateGroupMembers();
+                        updateGroupMembers(members);
                     }
                 }
 
