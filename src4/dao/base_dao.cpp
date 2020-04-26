@@ -26,6 +26,6 @@ namespace xmalloc::adv{
         int r = sqlite3_step(stmt2);
 
         xutils::sqlite::close(stmt2, conn);
-        return 0;
+        return r;
     }
 }

@@ -48,14 +48,12 @@ namespace xmalloc::adv{
     int insertGroupInfo(const GroupExt &group){
         string sqlStr = "INSERT INTO group_info (id,name,member_count) VALUES("+to_string(group.group_id) + ",'"+group.group_name+"'," +to_string(group.member_count) + ")";
         return executeSql(sqlStr);
-        return 0;
     }
 
     // 更新群信息
     int updateGroupInfo(const GroupExt &group){
         string sqlStr = format("UPDATE group_info SET name='%s',member_count=%d WHERE id=%d", group.group_name.c_str(), group.member_count, group.group_id);
         return executeSql(sqlStr);
-        return 0;
     }
 
 }

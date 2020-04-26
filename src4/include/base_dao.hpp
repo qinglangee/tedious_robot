@@ -14,4 +14,6 @@ namespace xmalloc::adv{
     // file  =========== base_dao.cpp ============
     // 执行一个 sql 语句
     int executeSql(string sqlStr);
+    // 创建表
+    int createTable(string sql);
 }

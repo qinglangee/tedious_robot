@@ -27,4 +27,10 @@ namespace xutils::str {
         // xmalloc::tmplog::TmpLog::info("-- " + result);
         return result;
     }
+
+    // 字符串替换  replace_all("12212", "12", "21")  原字串变为 21221 ， 返回 char*
+    string replace_all(string& str,const string& old_value,const string& new_value);
+
+    // 字符串替换  replace_all2("12212", "12", "21")  原字串变为 22211 ， 返回 char*
+    string replace_all2(string& str,const string& old_value,const string& new_value);
 }

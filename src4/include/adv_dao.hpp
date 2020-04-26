@@ -19,6 +19,6 @@ namespace xmalloc::adv{
     void insertGroupMember(const GroupMemberExt &member);
 
     // 批量插入更新组员信息
-    void insertGroupMembers(vector<GroupMember> &members);
-    void updateGroupMembers(vector<GroupMember> &members);
+    void insertGroupMembers(int64_t groupId, vector<GroupMember> &members);
+    void updateGroupMembers(int64_t groupId, vector<GroupMember> &members);
 }
