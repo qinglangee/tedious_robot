@@ -9,8 +9,7 @@ namespace xmalloc::adv{
     GroupMemberExt::GroupMemberExt(){
         sended = 0;
     }
-    GroupMemberExt::GroupMemberExt(GroupMember &src){
-        GroupMemberExt();
+    GroupMemberExt::GroupMemberExt(GroupMember &src):GroupMemberExt(){
         
         group_id = src.group_id;
         user_id = src.user_id;

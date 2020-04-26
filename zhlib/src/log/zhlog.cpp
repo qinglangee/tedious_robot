@@ -13,16 +13,45 @@ using namespace cq;
 namespace xmalloc::log {
     
     string ZhLog::logFile = "";
+    Level ZhLog::level = Level::INFO;
 
-    // 底层调用  info
-    void ZhLog::info(string type, string msg){
+    void ZhLog::fileLog(Level levelArg, string type, string msg){
         if(logFile == ""){
             logging::warning("WARN", "logFile is empty!!!");
         }else{
-            logging::info(type, msg);
-            string content = xutils::datetime::nowStr() + " [[" + type + "]] " + msg + "\n";
-            xutils::file::appendFile(content, logFile);
+            if(levelArg < level){
+                return;
+            }else{
+                string content = xutils::datetime::nowStr() + " [[" + type + "]] " + msg + "\n";
+                xutils::file::appendFile(content, logFile);
+            }
         }
+    }
+
+    // 底层调用  debug
+    void ZhLog::test(string type, string msg){
+        logging::debug(type, msg);
+        fileLog(Level::TEST, type, msg);
+    }
+
+    void ZhLog::test(string msg){
+        test("TEST", msg);
+    }
+
+    // 底层调用  debug
+    void ZhLog::debug(string type, string msg){
+        logging::debug(type, msg);
+        fileLog(Level::DEBUG, type, msg);
+    }
+
+    void ZhLog::debug(string msg){
+        debug("DEBUG", msg);
+    }
+
+    // 底层调用  info
+    void ZhLog::info(string type, string msg){
+        logging::info(type, msg);
+        fileLog(Level::INFO, type, msg);
     }
 
     void ZhLog::info(string msg){
@@ -31,13 +60,8 @@ namespace xmalloc::log {
 
     // 底层调用  info_success
     void ZhLog::info_success(string type, string msg){
-        if(logFile == ""){
-            logging::warning("WARN", "logFile is empty!!!");
-        }else{
-            logging::info_success(type, msg);
-            string content = xutils::datetime::nowStr() + " [[" + type + "]] " + msg + "\n";
-            xutils::file::appendFile(content, logFile);
-        }
+        logging::info_success(type, msg);
+        fileLog(Level::INFO, type, msg);
     }
 
     void ZhLog::info_success(string msg){

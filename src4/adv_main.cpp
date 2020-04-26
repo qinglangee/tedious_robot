@@ -20,6 +20,7 @@ using MessageSegment = cq::message::MessageSegment;
 CQ_INIT {
     on_enable([] { 
         xmalloc::log::ZhLog::logFile = get_app_directory() + "log/output.txt";
+        xmalloc::log::ZhLog::level = xmalloc::log::Level::INFO;
         xmalloc::adv::Config::dbFile = "adv.db";
 
         xmalloc::adv::startGroupInfoCheck();

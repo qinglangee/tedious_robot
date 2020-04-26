@@ -110,9 +110,9 @@ namespace xmalloc::adv{
                     zhl::info("请求群员信息。");
                     vector<GroupMember> members;
                     if(info.group_id == 132847879){
+                    members = get_group_member_list(info.group_id);
                     }
                     zhl::info("time1:");
-                    members = get_group_member_list(info.group_id);
                     zhl::info("time2:");
                     if(memCount == 0){
                         zhl::info("没有找到组信息, 插入一条记录。");

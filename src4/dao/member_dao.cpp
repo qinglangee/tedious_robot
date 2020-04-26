@@ -16,13 +16,13 @@ namespace xmalloc::adv{
     
     // 插入单个群员信息
     int insertGroupMember(GroupMemberExt &m){
-        // zhl::info("开始插入组员 ");
+        zhl::debug("开始插入单个组员 ");
         string tableName = "m" + to_string(m.group_id);
-        string sqlTemplate = "INSERT INTO " + tableName + " (id, nickname, card, sex, age, join_time, role, sended) VALUES (%llu, '%s', '%s', %d, %lu,%lu,%d, 0)";
+        string sqlTemplate = "INSERT INTO " + tableName + " (id, nickname, card, sex, age, join_time, role, sended) VALUES (%llu, '%s', '%s', %d, %lu,%lu,%d, %d)";
         string nickname = replace_all(m.nickname, "'", "");
         string card = replace_all(m.card, "'", "");
-        string sql = format(sqlTemplate, m.user_id, nickname.c_str(), card.c_str(), m.sex, m.age, m.join_time, m.role);
-        // zhl::info("插入组员 " + sql);
+        string sql = format(sqlTemplate, m.user_id, nickname.c_str(), card.c_str(), m.sex, m.age, m.join_time, m.role, m.sended);
+        zhl::debug("插入单个组员 " + sql);
         return executeSql(sql);
     }
 
@@ -32,7 +32,7 @@ namespace xmalloc::adv{
         string tableName = "m" + to_string(groupId);
         string sql = "CREATE TABLE " + tableName + "(id INT PRIMARY KEY NOT NULL, nickname TEXT, card TEXT, sex INT, age int,join_time int, role int,"
             + "sended INT NOT NULL)";
-        // zhl::info("新建表 " + sql);
+        zhl::debug("创建新的群员信息表 " + sql);
         executeSql(sql);
 
         // 再循环插入数据
