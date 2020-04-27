@@ -109,19 +109,19 @@ namespace xmalloc::adv{
                     // 组员信息
                     zhl::info("请求群员信息。");
                     vector<GroupMember> members;
-                    if(info.group_id == 132847879){
-                    members = get_group_member_list(info.group_id);
-                    }
+                    // if(info.group_id == 132847879){
+                    // }
                     zhl::info("time1:");
+                    members = get_group_member_list(info.group_id);
                     zhl::info("time2:");
                     if(memCount == 0){
                         zhl::info("没有找到组信息, 插入一条记录。");
                         int r = insertGroupInfo(gg);
-                        insertGroupMembers(info.group_id, members);
+                        createTableAndInsertGroupMembers(info.group_id, members);
                     }else{
-                        zhl::info("===更新群信息。");
+                        zhl::info("===更新群和群员信息。");
                         int r = updateGroupInfo(gg);
-                        // updateGroupMembers(info.group_id, members);
+                        updateGroupMembers(info.group_id, members);
                     }
                     zhl::info("time3:");
                 }

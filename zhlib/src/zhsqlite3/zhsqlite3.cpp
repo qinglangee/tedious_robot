@@ -41,4 +41,14 @@ namespace xutils::sqlite {
         sqlite3_close(conn);
     }
 
+
+    // sql 语句绑定值
+    int zh_bind(sqlite3_stmt* stmt, int i, int64_t iValue){
+        return sqlite3_bind_int64(stmt, i, iValue);
+    }
+    int zh_bind(sqlite3_stmt* stmt, int i, string iValue){
+        const char* strData = iValue.c_str();
+        return sqlite3_bind_text(stmt, i, strData, strlen(strData), SQLITE_TRANSIENT);
+    }
+
 }

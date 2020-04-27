@@ -1,5 +1,6 @@
 #pragma once
 
+#include "zhsqlite3.hpp"
 // #include "adv_dto.hpp"
 // #include "zhlog.hpp"
 
@@ -13,7 +14,7 @@ namespace xmalloc::adv{
 
     // file  =========== base_dao.cpp ============
     // 执行一个 sql 语句
-    int executeSql(string sqlStr);
-    // 创建表
-    int createTable(string sql);
+    int executeReturnDone(string sqlStr);
+    // 执行一个 sql 语句
+    int executeReturnDone(sqlite3* conn, string sqlStr);
 }

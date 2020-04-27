@@ -14,4 +14,8 @@ namespace xutils::sqlite {
 
     // 关闭清理资源 
     void close(sqlite3_stmt* stmt, sqlite3* conn);
+
+    // sql 语句绑定值
+    int zh_bind(sqlite3_stmt* stmt, int i, int64_t iValue);
+    int zh_bind(sqlite3_stmt* stmt, int i, string iValue);
 }
