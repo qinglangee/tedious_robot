@@ -5,7 +5,7 @@
 using namespace std;
 
 namespace xmalloc::log {
-    enum Level {
+    enum class Level {
         TEST = 10,
         DEBUG = 20,
         INFO = 30,
@@ -31,6 +31,8 @@ namespace xmalloc::log {
         static void info_success(string type, string msg);
         static void info_success(string msg);
 
+        static void warning(string type, string msg);
+        static void warning(string msg);
 
     };
 }

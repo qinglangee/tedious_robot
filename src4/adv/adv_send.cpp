@@ -10,6 +10,13 @@ using namespace std;
 using Message = cq::message::Message;
 using MessageSegment = cq::message::MessageSegment;
 
+/**
+ * 现有的命令 命令结构  adv cmd
+ * start 123456 ：给群 123456 的群员发送优惠信息
+ * end : 结束发送的线程
+ * check : 检查群信息同步
+ * 
+*/
 namespace xmalloc::adv{
     void advCmd(const PrivateMessageEvent &event){
 

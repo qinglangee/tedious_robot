@@ -47,4 +47,15 @@ namespace xmalloc::adv{
         }
         return r;
     }
+
+    sqlite3* openConnection(){
+        string dbPath = get_app_directory() + Config::dbFile;
+
+        // zhl::info("db", dbPath);
+
+
+        // 打开数据库
+        sqlite3* conn = xutils::sqlite::db_open(dbPath);
+        return conn;
+    }
 }

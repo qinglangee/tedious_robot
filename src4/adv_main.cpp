@@ -15,6 +15,8 @@ using namespace std;
 using Message = cq::message::Message;
 using MessageSegment = cq::message::MessageSegment;
 
+using zhl = xmalloc::log::ZhLog;
+
 
 
 CQ_INIT {
@@ -23,8 +25,11 @@ CQ_INIT {
         xmalloc::log::ZhLog::level = xmalloc::log::Level::INFO;
         xmalloc::adv::Config::dbFile = "adv.db";
 
-        xmalloc::adv::startGroupInfoCheck();
-        logging::info("启用", "优惠播放机插件已启用"); 
+
+        // 这个改为命令调用了，测试时可以打开
+        // xmalloc::adv::startGroupInfoCheck();
+
+        zhl::info("启用", "优惠播放机插件已启用"); 
         
     });
 
@@ -35,7 +40,26 @@ CQ_INIT {
             }
             xmalloc::adv::advCmd(event);
         } catch (ApiError &err) {
-            logging::warning("私聊", "优惠播放机命令处理出错, 错误码: " + to_string(err.code));
+            zhl::warning("私聊", "优惠播放机命令处理出错, 错误码: " + to_string(err.code));
+        }
+    });
+
+    
+    on_group_member_increase([](const GroupMemberIncreaseEvent &event){
+        zhl::info("迎新", "收到新群员 " + to_string(event.group_id) + "-" + to_string(event.user_id));
+        try {
+            xmalloc::adv::groupMemberIncrease(event);
+        } catch (ApiError &err) { // 忽略发送失败
+            zhl::warning("优惠", "优惠新人增加处理失败, 错误码: " + to_string(err.code));
+        }
+    });
+    
+    on_group_member_decrease([](const GroupMemberDecreaseEvent &event){
+        zhl::info("送旧", "收到退群 "  + to_string(event.group_id) + "-" + to_string(event.user_id));
+        try {
+            xmalloc::adv::groupMemberDecrease(event);
+        } catch (ApiError &err) { // 忽略发送失败
+            zhl::warning("优惠", "优惠旧人减少处理失败, 错误码: " + to_string(err.code));
         }
     });
 

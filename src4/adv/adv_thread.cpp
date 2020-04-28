@@ -1,4 +1,3 @@
-#pragma once
 
 #include <string>
 #include <process.h>
@@ -28,6 +27,7 @@ using MessageSegment = cq::message::MessageSegment;
 
 using zhl = xmalloc::log::ZhLog;
 using namespace xutils::str;
+
 
 namespace xmalloc::adv{
     bool running = false;
@@ -69,7 +69,7 @@ namespace xmalloc::adv{
 
     // 群员信息检测
     unsigned int __stdcall groupInfoCheckThread(void *pPM){
-        xutils::sys::sleep(3000); // 停一会，错过启动信息高峰。
+        xutils::sys::sleep(1000); // 停一会，错过启动信息高峰。
 
         zhl::info_success("S线程开始", "优惠播放-启动群员信息检测。");
         try{
@@ -78,22 +78,6 @@ namespace xmalloc::adv{
                 xutils::sys::sleep(1000); // 停一会，调用API不要太频繁。
                 Group g = groups[i];
                 Group info = get_group_info(g.group_id);
-
-                // // 读取群组信息
-                // neb::CJsonObject groupJson = group::readGroupMembers(info.group_id);
-                // int32_t count;
-                // groupJson.Get("member_count", count);
-
-                // if(info.member_count != count){
-                //     zhl::info("群组", to_string(g.group_id) + " " + g.group_name + " now:" + to_string(info.member_count) + " get:" + to_string(count));
-                //     // 组员信息
-                //     vector<GroupMember> members = get_group_member_list(info.group_id);
-                //     group::writeGroupMembers(info, members);
-                    
-                // }else{
-                //     zhl::info("====== 群组", to_string(g.group_id) + " " + g.group_name + " now:" + to_string(info.member_count) + " 不需要更新");
-                // }
-
 
                 int memCount = 0;
                 memCount = getGroupMemberCount(info.group_id);
@@ -139,39 +123,48 @@ namespace xmalloc::adv{
     // 处理优惠发送的线程
     unsigned int __stdcall advSendThread(void *pPM){
         if(sendGroupId == 0){
-            logging::info_success("优惠发送", "群号为0。");
+            zhl::warning("优惠发送", "群号为0。");
             return 0;
         }
         running = true;
 
-        logging::info_success("S线程开始", "启动了优惠播放处理线程。");
+        zhl::info_success("S线程开始", "启动了优惠播放处理线程。");
 
-        neb::CJsonObject groupJson = group::readGroupMembers(sendGroupId);
-        neb::CJsonObject membersJson; groupJson.Get("members", membersJson);
-        neb::CJsonObject memberJson;
-        int index = 0;
+        GroupMemberExt member = getUnsendGroupMember(sendGroupId);
+        zhl::info("S线程开始", "首个队员。userId:" + to_string(member.user_id));
 
-        bool hasNext = true;
+        // neb::CJsonObject groupJson = group::readGroupMembers(sendGroupId);
+        // neb::CJsonObject membersJson; groupJson.Get("members", membersJson);
+        // neb::CJsonObject memberJson;
+        // int index = 0;
 
-        while(running && hasNext){
-            membersJson.Get(index, memberJson);
+        bool hasNext = member.user_id > 0;
 
-            string name;memberJson.Get("name", name);
+        int index = 0; // 控制下，一次别太多了
+        while(running && hasNext && index < 100){
+            // membersJson.Get(index, memberJson);
 
-            logging::info("zhch", "发送优惠。name:" + name);
-            memberJson.Replace("sended", 1);
-            membersJson.Replace(index, memberJson);
-            groupJson.Replace("members", membersJson);
+            // string name;memberJson.Get("name", name);
 
-            group::writeGroupMembersJson(groupJson);
+            zhl::info("zhch", format("发送优惠。N:%d name:%s id %llu", index, member.nickname, member.user_id));
+            member.sended = 1;
+            updateGroupMember(member);
+            // memberJson.Replace("sended", 1);
+            // membersJson.Replace(index, memberJson);
+            // groupJson.Replace("members", membersJson);
 
-            xutils::sys::debug_sleep(3000, isDebug);
+            // group::writeGroupMembersJson(groupJson);
 
+            xutils::sys::debug_sleep(30*1000, isDebug);
+
+            // index++;
+            // hasNext = index < membersJson.GetArraySize();
+            member = getUnsendGroupMember(sendGroupId);
+            hasNext = member.user_id > 0;
             index++;
-            hasNext = index < membersJson.GetArraySize();
         }
 
-        logging::info_success("E线程结束", "优惠播放循环结束，退出。");
+        zhl::info_success("E线程结束", "优惠播放循环结束，退出。");
 
         return 0;
     }

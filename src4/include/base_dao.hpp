@@ -11,6 +11,8 @@ namespace xmalloc::adv{
     struct Config{
         static string dbFile;
     };
+    // 打开数据库
+    sqlite3* openConnection();
 
     // file  =========== base_dao.cpp ============
     // 执行一个 sql 语句

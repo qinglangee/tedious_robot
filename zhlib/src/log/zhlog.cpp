@@ -67,4 +67,15 @@ namespace xmalloc::log {
     void ZhLog::info_success(string msg){
         info_success("INFO_SUC", msg);
     }
+
+    
+    // 底层调用  warning
+    void ZhLog::warning(string type, string msg){
+        logging::warning(type, msg);
+        fileLog(Level::WARN, type, msg);
+    }
+
+    void ZhLog::warning(string msg){
+        warning("wARN", msg);
+    }
 }

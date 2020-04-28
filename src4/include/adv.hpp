@@ -8,11 +8,18 @@ using namespace cq;
 using namespace std;
 
 namespace xmalloc::adv{
-    // adv_send.cpp
+    // file  =========== adv_send.cpp ============
     void advCmd(const PrivateMessageEvent &event);
 
-    // adv_thread.cpp
+    
+    // file  =========== adv_thread.cpp ============
     void startAdvThread(string cmd);
     void stopAdvThread();
     void startGroupInfoCheck();
+
+    // file  =========== adv_member.cpp ============
+    // 群员增加
+    void groupMemberIncrease(const GroupMemberIncreaseEvent &event);
+    // 群员减少
+    void groupMemberDecrease(const GroupMemberDecreaseEvent &event);
 }
