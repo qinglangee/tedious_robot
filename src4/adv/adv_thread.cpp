@@ -40,11 +40,13 @@ namespace xmalloc::adv{
     unsigned int __stdcall advSendThread(void *pPM);
     unsigned int __stdcall groupInfoCheckThread(void *pPM);
 
+    void sendAdvMessage(int64_t userId);  // 向用户发送优惠信息
+
 
     // 启动处理广告发送的线程
     void startAdvThread(string cmd){
         if(running){
-            logging::info("zhch", "优惠播放处理线程已经在运行。");
+            zhl::info("zhch", "优惠播放处理线程已经在运行。");
             return;
         }
 
@@ -59,7 +61,7 @@ namespace xmalloc::adv{
     // 启动处理广告发送的线程
     void stopAdvThread(){
         running = false;
-        logging::info("zhch", "停止了优惠播放处理线程。");
+        zhl::info("zhch", "停止了优惠播放处理线程。");
     }
 
     // 启动群员信息检测
@@ -146,26 +148,36 @@ namespace xmalloc::adv{
 
             // string name;memberJson.Get("name", name);
 
-            zhl::info("zhch", format("发送优惠。N:%d name:%s id %llu", index, member.nickname, member.user_id));
+
+            sendAdvMessage(member.user_id);
+            zhl::info("zhch", format("发送优惠。N:%d name:%s id %llu", index, member.nickname.c_str(), member.user_id));
             member.sended = 1;
             updateGroupMember(member);
-            // memberJson.Replace("sended", 1);
-            // membersJson.Replace(index, memberJson);
-            // groupJson.Replace("members", membersJson);
-
-            // group::writeGroupMembersJson(groupJson);
 
             xutils::sys::debug_sleep(30*1000, isDebug);
 
-            // index++;
-            // hasNext = index < membersJson.GetArraySize();
             member = getUnsendGroupMember(sendGroupId);
             hasNext = member.user_id > 0;
             index++;
         }
 
         zhl::info_success("E线程结束", "优惠播放循环结束，退出。");
+        running = false;
 
         return 0;
+    }
+
+    void sendAdvMessage(int64_t userId){
+        if(userId != 2832146557 && userId != 61804888 && userId != 3556607653){
+            zhl::info("隔离期间不发消息。。。  " + to_string(userId));
+            return;
+        }
+
+        zhl::info("给自己人发消息。 id:" + to_string(userId));
+        Target target = Target::user(userId);
+        send_message(target, "欢迎来到这直播间。");
+        xutils::sys::sleep(1000);
+        
+
     }
 }

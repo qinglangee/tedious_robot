@@ -29,7 +29,7 @@ namespace xmalloc::adv{
         if(cmd.find("start") == 0){
             startAdvThread(cmd);
             send_message(event.target, MessageSegment::face(111) + "优惠播放线程开启.");
-        }else if(cmd.find("end") == 0 ){
+        }else if(cmd.find("stop") == 0 ){
             stopAdvThread();
             send_message(event.target, MessageSegment::face(111) + "优惠播放线程关闭.");
         }else{
